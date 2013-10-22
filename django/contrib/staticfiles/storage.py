@@ -191,7 +191,12 @@ class CachedFilesMixin(object):
                 else:
                     start, end = 1, sub_level - 1
             joined_result = '/'.join(name_parts[:-start] + url_parts[end:])
-            hashed_url = self.url(unquote(joined_result), force=True)
+            try:
+                hashed_url = self.url(unquote(joined_result), force=True)
+            except Exception as err:
+                raise Exception("%r not found. Referenced within %s : %s" % (
+                    url, name, err
+                ))
             file_name = hashed_url.split('/')[-1:]
             relative_url = '/'.join(url.split('/')[:-1] + file_name)
 
